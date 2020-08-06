@@ -10,7 +10,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
-    val viewModel = SearchRepoViewModel()
+    val viewModel = SearchRepoViewModel(Repository())
     val adapter = ReposAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {

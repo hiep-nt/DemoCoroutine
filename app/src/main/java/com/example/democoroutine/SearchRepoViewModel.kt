@@ -1,20 +1,28 @@
 package com.example.democoroutine
 
+import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.*
-import com.example.democoroutine.api.GithubService
 import com.example.democoroutine.api.IN_QUALIFIER
 import com.example.democoroutine.model.Repo
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.*
 
-class SearchRepoViewModel : ViewModel() {
+class SearchRepoViewModel(private val repository: IRepository) : ViewModel() {
 
     private val queryLiveData = MutableLiveData<String>()
-    private val service = GithubService.create()
 
-    val repoResult : LiveData<List<Repo>> = queryLiveData.switchMap { queryString ->
-        liveData {
-//            val repoResult = service.searchRepos(queryString,1,50).items
-            val data = MutableLiveData(service.searchRepos(queryString,1,50).items)
-            emitSource(data)
+    val repoResult: LiveData<List<Repo>> = queryLiveData.switchMap { query ->
+        liveData<List<Repo>>(context = viewModelScope.coroutineContext + Dispatchers.IO) {
+            val flow: Flow<List<Repo>> = repository.getRepos(query)
+            val flow2 = (1..50).asFlow()
+            emitSource(
+                flow.asLiveData()
+//                flow.map { it.subList(0, 10) }.asLiveData()
+//                flow.transform { list -> emit(list.subList(0, 20)) }.asLiveData()
+//                flow.filter { it.first().fullName.equals("keras-team/keras") }.asLiveData()
+//                flow.onEach { Log.d("KAI", "OK")}.asLiveData()
+            )
         }
     }
 

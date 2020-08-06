@@ -18,6 +18,8 @@ package com.example.democoroutine.api
 
 import com.example.democoroutine.model.Repo
 import com.google.gson.annotations.SerializedName
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
 
 /**
  * Data class to hold repo responses from searchRepo API calls.
